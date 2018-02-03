@@ -1,0 +1,348 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-app.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-query.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../bower_components/neon-animation/web-animations.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animations.html">
+
+
+<link rel="import" href="my-icons.html">
+
+<dom-module id="my-app">
+  <template>
+    <style include="iron-flex iron-flex-alignment">
+      :host {
+        --app-primary-color: #4285f4;
+        --app-secondary-color: black;
+
+        display: block;
+      }
+      paper-button {
+        color: #fff;
+        background-color: #4285f4;
+      }
+      app-header {
+        color: #fff;
+        background-color: var(--app-primary-color);
+      }
+
+      app-header paper-icon-button {
+        --paper-icon-button-ink-color: white;
+      }
+      .front-wheel-column .rear-wheel-column {
+        padding: 5px;
+      }
+      .svg{
+        padding: 20px;
+       
+      }
+      paper-dropdown-menu {
+        padding: 10px;
+      }
+    </style>
+
+    <paper-button on-tap="_authuser">Login</paper-button>
+    <firebase-app
+      auth-domain="newone-71340.firebaseapp.com"
+      database-url="https://newone-71340.firebaseio.com"
+      api-key="AIzaSyBGFQ3NMjMQ-ar66-CXlRtCtA-dsyRaCLE"
+      storage-bucket="newone-71340.appspot.com"
+      messaging-sender-id="550301230940">
+    </firebase-app>
+    <firebase-auth id="auth" user="{{user}}" provider="google" on-error="handleError">
+    </firebase-auth>
+
+
+    <firebase-query
+      id="queryBrandsFront"      
+      path="/rims"            
+      order-by-child="name"            
+      equal-to="{{frontRim}}"
+      data="{{frontBrands}}">
+    </firebase-query>
+
+    <!-- <firebase-query
+      id="queryBrandFront"      
+      path="/rims"
+      order-by-child="name"            
+      equal-to="{{frontRim}}"
+      data="{{test}}">
+    </firebase-query> -->
+
+    <firebase-query
+      id="queryBrandsRear"      
+      path="/rims"           
+      order-by-child="name"            
+      equal-to="{{rearRim}}" 
+      data="{{rearBrands}}">
+    </firebase-query>
+
+    <firebase-query
+      id="queryFrontRim"      
+      path="/rims"
+      order-by-child="brand"
+      equal-to="{{frontRimBrand}}"
+      data="{{frontRims}}">
+    </firebase-query>
+
+    <firebase-query
+      id="queryRearRim"      
+      path="/rims"
+      order-by-child="brand"
+      equal-to="{{rearRimBrand}}"
+      data="{{rearRims}}">
+    </firebase-query>
+
+
+      <!-- Main content -->
+      <!-- <app-header-layout has-scrolling-region> -->
+
+        
+        <app-header slot="header" condenses reveals effects="waterfall">
+          <app-toolbar>
+            <paper-icon-button icon="my-icons:menu" drawer-toggle></paper-icon-button>
+            <div main-title>Wheelbuilder.com</div> <div>Welcome [[user.displayName]]</div>
+          </app-toolbar>
+        </app-header>
+        <div class="layout horizontal">
+          <div>
+           <img src="wheels.png" class="svg" style="width:250px;height:250px;">
+          </div>
+          <div class="front-wheel-column">
+            <div>
+              <paper-dropdown-menu label="Front Rim Brand">
+                <paper-listbox slot="dropdown-content" class="dropdown-content" selected="{{frontRimBrand}}" attr-for-selected="name">
+                  <template is="dom-repeat" id="rimListFrot" items="{{_front_brand_list}}">                
+                    <paper-item name="{{item}}">{{item}}</paper-item>
+                  </template>
+                </paper-listbox>
+              </paper-dropdown-menu>
+            </div>
+            <div>
+              <paper-dropdown-menu label="Front Rim">
+                <paper-listbox slot="dropdown-content" class="dropdown-content" selected="{{frontRim}}" attr-for-selected="name">
+                  <template is="dom-repeat" id="rimListFront" items="{{_front_rim_list}}">                
+                    <paper-item name="{{item}}">{{item}}</paper-item>
+                  </template>
+                </paper-listbox>
+              </paper-dropdown-menu>
+            </div>
+          </div>
+
+          <div class="rear-wheel-column">
+            <div>
+              <paper-dropdown-menu label="Rear Rim Brand">
+                <paper-listbox slot="dropdown-content" class="dropdown-content" selected="{{rearRimBrand}}" attr-for-selected="name">
+                  <template is="dom-repeat" id="rimListRear" items="{{_rear_brand_list}}">                
+                    <paper-item name="{{item}}">{{item}}</paper-item>
+                  </template>
+                </paper-listbox>
+              </paper-dropdown-menu>
+            </div>
+            <div>
+              <paper-dropdown-menu label="Rear Rim">
+                <paper-listbox slot="dropdown-content" class="dropdown-content" selected="{{rearRim}}" attr-for-selected="name">
+                  <template is="dom-repeat" id="rimListRear" items="{{_rear_rim_list}}">                
+                    <paper-item name="{{item}}">{{item}}</paper-item>
+                  </template>
+                </paper-listbox>
+              </paper-dropdown-menu>
+            </div>
+        </div>
+        </div>
+
+      <!-- </app-header-layout> -->
+    <!-- </app-drawer-layout> -->
+  </template>
+
+  <script>
+    class MyApp extends Polymer.Element {
+      static get is() { return 'my-app'; }
+
+      static get properties() {
+        return {
+          // test:{
+          //   type: Object,
+          //   value: [],
+          //   observer: '_testChanged',
+          // },
+          data: {
+            type: Object,            
+            observer: '_dataChanged',
+          },
+          //Front wheel
+          frontBrands: {
+            type: Object,
+            value: [],
+            observer: '_frontBrandsChanged',
+          },
+          frontRimBrand: {
+            type: String,
+            value: null,
+            observer: '_frontRimBrandChanged',
+          },
+          frontRims: {
+            type:Object,
+            value: [],
+            observer: '_frontRimsChanged',
+          },
+          frontRim: {
+            type: String,
+            value: null,
+            observer: '_frontRimChanged',
+          },
+          frontRimSpokeCount: {
+            type: Number,
+            value: 0,
+          },
+          // Rear wheel           
+          rearBrands: {
+            type: Object,
+            value: [],
+            observer: '_rearBrandsChanged',
+          },
+
+          rearRimBrand:{
+            type: String,
+            value: null,
+          },
+
+          rearRims: {
+            type:Object,
+            value: [],
+            observer: '_rearRimsChanged',
+          },
+          rearRim: {
+            type: String,
+            value: null,
+            observer: '_rearRimChanged',
+          },
+          rearRimSpokeCount: {
+            type: Number,
+            value: 0,
+          },
+          _front_brand_list: {
+            type: Object,
+            value: [],
+          },
+          _rear_brand_list: {
+            type: Object,
+            value: [],
+          },
+          _front_rim_list: {
+            type: Object,
+            value: [],
+          },
+          _rear_rim_list: {
+            type: Object,
+            value: [],
+          },
+        };
+      }
+
+    ready() {
+      super.ready();
+    }
+      // static get observers() {
+      //   return [
+      //     '_routePageChanged(routeData.page)',
+      //   ];
+      // }
+      // _testChanged(test) {
+
+      //   this.frontRimBrand = test[0].brand;
+      //   console.log('TEst changed,', test);
+      // }
+      _dataChanged(data) {       
+        console.log('Data changed,', data);
+      }
+      _frontRimBrandChanged(brand) {
+        console.log('Brand', brand);        
+      }
+      //Brands
+      _frontBrandsChanged(rims) {
+        let _front_brand_list = [];
+        rims.forEach( function (rim)
+        {
+          _front_brand_list.push(rim.brand);
+        });    
+        this._front_brand_list = _front_brand_list.filter((v, i, a) => a.indexOf(v) === i);     
+      }
+
+      _rearBrandsChanged(rims) {
+        let _rear_brand_list = [];
+        rims.forEach( function (rim)
+        {
+          _rear_brand_list.push(rim.brand);
+        });    
+        this._rear_brand_list = _rear_brand_list.filter((v, i, a) => a.indexOf(v) === i);     
+      }
+
+      //Rim list
+      _frontRimsChanged(rims) {
+        let _front_rim_list = [];
+        rims.forEach( function (rim)
+        { 
+          _front_rim_list.push(rim.name);
+        });    
+        this._front_rim_list = _front_rim_list.filter((v, i, a) => a.indexOf(v) === i);     
+      }
+
+      _rearRimsChanged(rims) {
+        let _rear_rim_list = [];
+        rims.forEach( function (rim)
+        { 
+          _rear_rim_list.push(rim.name);
+        });    
+        this._rear_rim_list = _rear_rim_list.filter((v, i, a) => a.indexOf(v) === i);     
+      }
+
+      //Selected rim
+      _frontRimChanged(rim) {        
+        if (this.frontRimBrand === null) {
+          if (this._front_brand_list.length !== 0) {
+            this.frontRimBrand = this._front_brand_list[0];
+          }
+        }
+      }
+
+      _rearRimChanged(rim) {
+        if (this.rearRimBrand === null) {
+          if (this._rear_brand_list.length !== 0) {
+            this.rearRimBrand = this._rear_brand_list[0];
+          }
+        }
+      }
+
+      _authuser() {
+        this.$.auth.signInWithPopup();
+      }
+    }
+
+    window.customElements.define(MyApp.is, MyApp);
+  </script>
+</dom-module>
