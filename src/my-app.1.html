@@ -44,7 +44,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       paper-button {
         color: #fff;
         background-color: #4285f4;
-        margin-top: 10px;
       }
       app-header {
         color: #fff;
@@ -64,10 +63,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       paper-dropdown-menu {
         padding: 10px;
       }
-
     </style>
 
-    <!-- <paper-button on-tap="_authuser">Login</paper-button> -->
+    <paper-button on-tap="_authuser">Login</paper-button>
     <firebase-app
       auth-domain="newone-71340.firebaseapp.com"
       database-url="https://newone-71340.firebaseio.com"
@@ -86,6 +84,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       equal-to="{{frontRim}}"
       data="{{frontBrands}}">
     </firebase-query>
+
+    <!-- <firebase-query
+      id="queryBrandFront"      
+      path="/rims"
+      order-by-child="name"            
+      equal-to="{{frontRim}}"
+      data="{{test}}">
+    </firebase-query> -->
 
     <firebase-query
       id="queryBrandsRear"      
@@ -112,53 +118,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </firebase-query>
 
     <firebase-query
-      id="queryFrontSpoke"      
-      path="/rims"
-      order-by-child="name"
-      equal-to="{{frontRim}}"
-      data="{{frontSpokeCounts}}">
-    </firebase-query>
+    id="queryFrontSpoke"      
+    path="/rims"
+    order-by-child="name"
+    equal-to="{{frontRim}}"
+    data="{{frontSpokeCounts}}">
+  </firebase-query>
 
-    <firebase-query
-      id="queryRearSpoke"      
-      path="/rims"
-      order-by-child="name"
-      equal-to="{{rearRim}}"
-      data="{{rearSpokeCounts}}">
-    </firebase-query>
+  <firebase-query
+    id="queryRearSpoke"      
+    path="/rims"
+    order-by-child="name"
+    equal-to="{{rearRim}}"
+    data="{{rearSpokeCounts}}">
+  </firebase-query>
 
-    <firebase-query
-      id="queryFrontHub"      
-      path="/fronthubs"
-      order-by-child="spoke"
-      equal-to="{{frontSpokeCount}}"
-      data="{{frontHubs}}">
-    </firebase-query>
-
-    <firebase-query
-      id="queryRearHub"      
-      path="/rearhubs"
-      order-by-child="spoke"
-      equal-to="{{rearSpokeCount}}"
-      data="{{rearHubs}}">
-    </firebase-query>
-
-    <firebase-query
-      id="queryFrontHubDisc"      
-      path="/fronthubs"
-      order-by-child="name"
-      equal-to="{{frontHub}}"
-      data="{{frontDiscs}}">
-    </firebase-query>
-
-    <firebase-query
-      id="queryRearHubDisc"      
-      path="/rearhubs"
-      order-by-child="name"
-      equal-to="{{rearHub}}"
-      data="{{rearDiscs}}">
-    </firebase-query>
-  
 
       <!-- Main content -->
       <!-- <app-header-layout has-scrolling-region> -->
@@ -167,26 +141,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <app-header slot="header" condenses reveals effects="waterfall">
           <app-toolbar>
             <paper-icon-button icon="my-icons:menu" drawer-toggle></paper-icon-button>
-            <div main-title>Wheelbuilder.com</div> 
-            <!-- <div>Welcome [[user.displayName]]</div> -->
+            <div main-title>Wheelbuilder.com</div> <div>Welcome [[user.displayName]]</div>
           </app-toolbar>
         </app-header>
-        <div class="layout horizontal around-justified">
-          <div>
-            <paper-button on-tap="wheelsetSelected">Wheelset</paper-button>
-          </div>
-          <div>
-            <paper-button on-tap="frontSelected">Front Wheel</paper-button>
-          </div>
-          <div>
-            <paper-button on-tap="rearSelected">Rear Wheel</paper-button>
-          </div>
-        </div>
         <div class="layout horizontal">
           <div>
            <img src="wheels.png" class="svg" style="width:250px;height:250px;">
           </div>
-          <div class="front-wheel-column" hidden$="[[rearOnly]]">
+          <div class="front-wheel-column">
             <div>
               <paper-dropdown-menu label="Front Rim Brand">
                 <paper-listbox slot="dropdown-content" class="dropdown-content" selected="{{frontRimBrand}}" attr-for-selected="name">
@@ -215,29 +177,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 </paper-dropdown-menu>
               </div>
 
-              <div>
-                  <paper-dropdown-menu label="Front Hub">
-                    <paper-listbox slot="dropdown-content" class="dropdown-content" selected="{{frontHub}}" attr-for-selected="name">
-                      <template is="dom-repeat" id="hubFront" items="{{_front_hubs_list}}">                
-                        <paper-item name="{{item}}">{{item}}</paper-item>
-                      </template>
-                    </paper-listbox>
-                  </paper-dropdown-menu>
-                </div>
-                <div>
-                  <paper-dropdown-menu label="Front Disc Interface">
-                    <paper-listbox slot="dropdown-content" class="dropdown-content" selected="{{frontDisc}}" attr-for-selected="name">
-                      <template is="dom-repeat" id="discFront" items="{{_front_discs_list}}">                
-                        <paper-item name="{{item}}">{{item}}</paper-item>
-                      </template>
-                    </paper-listbox>
-                  </paper-dropdown-menu>
-                </div>
-
-
           </div>
 
-          <div class="rear-wheel-column" hidden$="[[frontOnly]]">
+          <div class="rear-wheel-column">
             <div>
               <paper-dropdown-menu label="Rear Rim Brand">
                 <paper-listbox slot="dropdown-content" class="dropdown-content" selected="{{rearRimBrand}}" attr-for-selected="name">
@@ -264,24 +206,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     </template>
                   </paper-listbox>
                 </paper-dropdown-menu>
-              </div>
-              <div>
-                  <paper-dropdown-menu label="Rear Hub">
-                    <paper-listbox slot="dropdown-content" class="dropdown-content" selected="{{rearHub}}" attr-for-selected="name">
-                      <template is="dom-repeat" id="hubRear" items="{{_rear_hubs_list}}">                
-                        <paper-item name="{{item}}">{{item}}</paper-item>
-                      </template>
-                    </paper-listbox>
-                  </paper-dropdown-menu>
-              </div>
-              <div>
-                  <paper-dropdown-menu label="Rear Disc Interface">
-                    <paper-listbox slot="dropdown-content" class="dropdown-content" selected="{{rearDisc}}" attr-for-selected="name">
-                      <template is="dom-repeat" id="discRear" items="{{_rear_discs_list}}">                
-                        <paper-item name="{{item}}">{{item}}</paper-item>
-                      </template>
-                    </paper-listbox>
-                  </paper-dropdown-menu>
               </div>
         </div>
         </div>
@@ -324,21 +248,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           frontRim: {
             type: String,
             value: null,
+            observer: '_frontRimChanged',
           },
           frontSpokeCounts: {
             type: Number,
             value: 0,
             observer: '_frontSpokeCountsChanged'
-          },
-          frontHubs: {
-            type: Object,
-            value: [],
-            observer: '_frontHubsChanged',
-          },
-          frontDiscs: {
-            type: Object,
-            value: [],
-            observer: '_frontDiscsChanged',
           },
           // Rear wheel           
           rearBrands: {
@@ -359,21 +274,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           rearRim: {
             type: String,
             value: null,
+            observer: '_rearRimChanged',
           },
           rearSpokeCounts: {
             type: Number,
             value: 0,
             observer: '_rearSpokeCountsChanged',
-          },
-          rearHubs:{
-            type: Object,
-            value: [],
-            observer: '_rearHubsChanged',
-          },
-          rearDiscs:{
-            type: Object,
-            value: [],
-            observer: '_rearDiscsChanged',
           },
           _front_brand_list: {
             type: Object,
@@ -398,31 +304,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           _rear_spokes_count_list: {
             type: Object,
             value: [],
-          },
-
-          _front_hubs_list: {
-            type: Object,
-            value: [],
-          },
-          _rear_hubs_list: {
-            type: Object,
-            value: [],
-          },
-          _front_discs_list: {
-            type: Object,
-            value: [],
-          },
-          _rear_discs_list: {
-            type: Object,
-            value: [],
-          },
-          frontOnly: {
-            type: Boolean,
-            value: false,
-          },
-          rearOnly: {
-            type: Boolean,
-            value: false,
           },
         };
       }
@@ -485,12 +366,29 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this._rear_rim_list = _rear_rim_list.filter((v, i, a) => a.indexOf(v) === i);     
       }
 
+      //Selected rim
+      _frontRimChanged(rim) {        
+        if (this.frontRimBrand === null) {
+          if (this._front_brand_list.length !== 0) {
+            this.frontRimBrand = this._front_brand_list[0];
+          }
+        }
+      }
+
+      _rearRimChanged(rim) {
+        if (this.rearRimBrand === null) {
+          console.log('Chaning rear rim brand');
+          if (this._rear_brand_list.length !== 0) {
+            this.rearRimBrand = this._rear_brand_list[0];
+          }
+        }
+      }
       // Spoke counts list
       _frontSpokeCountsChanged(spokes) {
         let _front_spokes_count_list = [];
         spokes.forEach( function (spoke)
         { 
-          _front_spokes_count_list.push(spoke.spokes);
+          _front_spokes_count_list.push(spoke.holes);
         });    
         this._front_spokes_count_list = _front_spokes_count_list.filter((v, i, a) => a.indexOf(v) === i);     
       }
@@ -499,62 +397,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         let _rear_spokes_count_list = [];
         spokes.forEach( function (spoke)
         { 
-          _rear_spokes_count_list.push(spoke.spokes);
+          _rear_spokes_count_list.push(spoke.holes);
         });    
         this._rear_spokes_count_list = _rear_spokes_count_list.filter((v, i, a) => a.indexOf(v) === i);     
       }
 
-      _frontHubsChanged(hubs) {
-        let _front_hubs_list = [];
-        hubs.forEach( function (hub)
-        { 
-          _front_hubs_list.push(hub.name);
-        });    
-        this._front_hubs_list = _front_hubs_list.filter((v, i, a) => a.indexOf(v) === i);     
-      }
 
-      _rearHubsChanged(hubs) {
-        let _rear_hubs_list = [];
-        hubs.forEach( function (hub)
-        { 
-          _rear_hubs_list.push(hub.name);
-        });    
-        this._rear_hubs_list = _rear_hubs_list.filter((v, i, a) => a.indexOf(v) === i);     
-      }
 
-      _frontDiscsChanged(discs) {
-        let _front_discs_list = [];
-        discs.forEach( function (disc)
-        { 
-          _front_discs_list.push(disc.disc);
-        });    
-        this._front_discs_list = _front_discs_list.filter((v, i, a) => a.indexOf(v) === i);     
-      }
-
-      _rearDiscsChanged(discs) {
-        let _rear_discs_list = [];
-        discs.forEach( function (disc)
-        { 
-          _rear_discs_list.push(disc.disc);
-        });    
-        this._rear_discs_list = _rear_discs_list.filter((v, i, a) => a.indexOf(v) === i);     
-      }
 
       _authuser() {
         this.$.auth.signInWithPopup();
-      }
-
-      wheelsetSelected() {
-        this.frontOnly = false;
-        this.rearOnly = false;
-      }
-      frontSelected() {        
-        this.frontOnly = true;
-        this.rearOnly = false;
-      }
-      rearSelected() {        
-        this.frontOnly = false;
-        this.rearOnly = true;
       }
     }
 
