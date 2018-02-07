@@ -151,14 +151,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       data="{{frontDiscs}}">
     </firebase-query>
 
-    <firebase-query
-      id="queryRearHubDisc"      
-      path="/rearhubs"
-      order-by-child="name"
-      equal-to="{{rearHub}}"
-      data="{{rearDiscs}}">
-    </firebase-query>
-  
+
+  <firebase-query
+    id="queryRearHubDisc"      
+    path="/rearhubs"
+    order-by-child="name"
+    equal-to="{{rearHub}}"
+    data="{{rearDiscs}}">
+  </firebase-query>
 
       <!-- Main content -->
       <!-- <app-header-layout has-scrolling-region> -->
@@ -184,7 +184,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </div>
         <div class="layout horizontal">
           <div>
-           <img src="wheels.png" class="svg" style="width:250px;height:250px;">
+           <img src="/images/wheels.png" class="svg" style="width:250px;height:250px;">
           </div>
           <div class="front-wheel-column" hidden$="[[rearOnly]]">
             <div>
@@ -233,8 +233,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     </paper-listbox>
                   </paper-dropdown-menu>
                 </div>
-
-
+                <div>
+                    <paper-dropdown-menu label="Front Axle">
+                      <paper-listbox slot="dropdown-content" class="dropdown-content" selected="{{frontAxle}}" attr-for-selected="name">
+                        <template is="dom-repeat" id="axleFront" items="{{_front_axles_list}}">                
+                          <paper-item name="{{item}}">{{item}}</paper-item>
+                        </template>
+                      </paper-listbox>
+                    </paper-dropdown-menu>
+                  </div>
           </div>
 
           <div class="rear-wheel-column" hidden$="[[frontOnly]]">
@@ -278,6 +285,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   <paper-dropdown-menu label="Rear Disc Interface">
                     <paper-listbox slot="dropdown-content" class="dropdown-content" selected="{{rearDisc}}" attr-for-selected="name">
                       <template is="dom-repeat" id="discRear" items="{{_rear_discs_list}}">                
+                        <paper-item name="{{item}}">{{item}}</paper-item>
+                      </template>
+                    </paper-listbox>
+                  </paper-dropdown-menu>
+              </div>
+              <div>
+                  <paper-dropdown-menu label="Rear Axle">
+                    <paper-listbox slot="dropdown-content" class="dropdown-content" selected="{{rearAxle}}" attr-for-selected="name">
+                      <template is="dom-repeat" id="axleRear" items="{{_rear_axles_list}}">                
                         <paper-item name="{{item}}">{{item}}</paper-item>
                       </template>
                     </paper-listbox>
@@ -340,6 +356,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             value: [],
             observer: '_frontDiscsChanged',
           },
+          frontDisc: {
+            type: String,
+            value: null,
+          },      
+          frontAxle: {
+            type: String,
+            value: null,
+          },      
           // Rear wheel           
           rearBrands: {
             type: Object,
@@ -375,6 +399,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             value: [],
             observer: '_rearDiscsChanged',
           },
+          rearDisc: {
+            type: String,
+            value: null,
+          },      
+          rearAxle: {
+            type: String,
+            value: null,
+          },      
           _front_brand_list: {
             type: Object,
             value: [],
@@ -413,6 +445,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             value: [],
           },
           _rear_discs_list: {
+            type: Object,
+            value: [],
+          },
+          _front_axles_list: {
+            type: Object,
+            value: [],
+          },
+          _rear_axles_list: {
             type: Object,
             value: [],
           },
@@ -524,20 +564,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _frontDiscsChanged(discs) {
         let _front_discs_list = [];
+        let _front_axles_list = [];
         discs.forEach( function (disc)
         { 
           _front_discs_list.push(disc.disc);
+          _front_axles_list.push(disc.axle);
         });    
         this._front_discs_list = _front_discs_list.filter((v, i, a) => a.indexOf(v) === i);     
+        this._front_axles_list = _front_axles_list.filter((v, i, a) => a.indexOf(v) === i);     
       }
 
       _rearDiscsChanged(discs) {
         let _rear_discs_list = [];
+        let _rear_axles_list = []
         discs.forEach( function (disc)
         { 
           _rear_discs_list.push(disc.disc);
+          _rear_axles_list.push(disc.axle);
         });    
         this._rear_discs_list = _rear_discs_list.filter((v, i, a) => a.indexOf(v) === i);     
+        this._rear_axles_list = _rear_axles_list.filter((v, i, a) => a.indexOf(v) === i);     
       }
 
       _authuser() {
